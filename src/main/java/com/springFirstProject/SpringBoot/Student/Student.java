@@ -12,7 +12,7 @@ import java.time.Period;
 public class Student {
 
     @Id
-    @SequenceGenerator(//generating a sequence
+    @SequenceGenerator(//generating a sequence or table
             name = "student_sequence",
             sequenceName = "student_sequence",
             allocationSize = 1
@@ -21,8 +21,8 @@ public class Student {
             strategy = GenerationType.SEQUENCE,
             generator = "student_sequence"
     )
-    long id;
 
+    long id;
     @Transient//It says that there is no need for this attribute to be a seperate column in our database, we can calculate the age by dob
     int age;
     String name;

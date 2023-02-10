@@ -1,5 +1,6 @@
 package com.springFirstProject.SpringBoot.Student;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 //We can also use @Component here but service is more professional and it defines what we are doing
@@ -45,5 +47,29 @@ public class StudentService {
             throw new IllegalStateException("student with given id is not available");
         }
         studentRepository.deleteById(studentId);
+    }
+
+    @Transactional
+    public void updateStudent(long id, String name, String email) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Student with "+id+" does not exists"));
+
+        if (name != null &&
+                name.length() > 0 &&
+                !Objects.equals(student.getName(), name)
+        ) {
+            student.setName(name);
+        }
+
+        if (email != null &&
+                email.length() > 0 &&
+                !Objects.equals(student.getEmail(), email)
+        ) {
+            Optional<Student> studentOptional = studentRepository.findStudentByEmail(email);
+            if(studentOptional.isPresent()) {
+                throw new IllegalStateException("email Taken");
+            }
+            student.setEmail(email);
+        }
     }
 }
